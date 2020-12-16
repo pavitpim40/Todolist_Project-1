@@ -4,7 +4,7 @@ const db = require('../../models');
 
 const option = { 
     jwtFromRequest : ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey : "12345678",
+    secretOrKey : process.env.SECRET_OR_KEY,
 }
 
 const JWTStrategy = new Strategy(option,async (payload,done)=>{

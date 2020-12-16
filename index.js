@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -16,8 +18,8 @@ app.use('/todo-list', todoListRoute);
 app.use('/users', userRoutes);
 
 db.sequelize.sync({force:false}).then(()=> {
-    app.listen(8000, ()=>{
-        console.log("Server is running at port 8000");
+    app.listen(process.env.PORT, ()=>{
+        console.log(`Server is running at port ${process.env.PORT}`);
     });
 })
 

@@ -32,7 +32,7 @@ const loginUser = async (req,res) => {
                 name : targetUser.name,
                 id : targetUser.id,
             }
-            const token = jwt.sign(payload,"12345678",{expiresIn:3600});
+            const token = jwt.sign(payload,process.env.SECRET_OR_KEY,{expiresIn:3600});
             res.status(200).send({
                 token: token,
                 message: "Login successful."
