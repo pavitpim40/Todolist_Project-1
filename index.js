@@ -5,6 +5,8 @@ const todoListRoute = require('./routes/todoList')
 const userRoutes =require('./routes/user')
 const db = require('./models')
 
+
+require('./config/passport/passport');
 app.use(cors());
 
 
