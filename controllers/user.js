@@ -1,5 +1,6 @@
 const db = require('../models');
 const bcryptjs = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const registerUser = async (req,res) => {
     const {username,password,name} = req.body;
@@ -19,8 +20,28 @@ const registerUser = async (req,res) => {
     }
    
 }
-const loginUser = (req,res) => {
-    res.send("login user")
+const loginUser = async (req,res) => {
+    const {username,password} = req.body;
+    const targetUser = await db.User.findOne({where:{username:username}});
+    if(!targetUser){
+        res.status(400).send({message : "username or password is wrong"});
+    } else {
+        const isCorrectPassword = bcryptjs.compareSync(password,targetUser.password);
+        if(isCorrectPassword){
+            const payload = {
+                name : targetUser.name,
+                id : targetUser.id,
+            }
+            const token = jwt.sign(payload,"12345678",{expiresIn:3600});
+            res.status(200).send({
+                token: token,
+                message: "Login successful."
+            })
+
+        }else {
+            res.status(400).send({message : "username or password is wrong"});
+        }
+    }
 
 }
 
