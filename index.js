@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 app.use('/todo-list', todoListRoute);
 
-db.sequelize.sync().then(()=> {
+db.sequelize.sync({force:false}).then(()=> {
     app.listen(8000, ()=>{
         console.log("Server is running at port 8000");
     });

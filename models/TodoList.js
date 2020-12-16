@@ -1,5 +1,3 @@
-const { sequelize } = require(".");
-
 module.exports = (sequelize,DataTypes) => {
     const model = sequelize.define('TodoList', {
         task : {
@@ -8,6 +6,10 @@ module.exports = (sequelize,DataTypes) => {
     },{
         tableName: 'todoLists',
         timestamps : false,
-    })
+    });
+    model.associate = models => {
+        model.belongsTo(models.User, {foreignKey:'user_id'});
+
+    }
     return model;
 }
