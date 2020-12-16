@@ -2,7 +2,7 @@ const db = require("../models");
 
 
 const getTodoList = async (req,res) => {
-    const todoList = await db.TodoList.findAll();
+    const todoList = await db.TodoList.findAll({where: {user_id : req.user.id}});
     res.status(200).send(todoList);
 
 }
@@ -10,7 +10,8 @@ const getTodoList = async (req,res) => {
 
 const createTodoList = async (req,res) => {
    const newTodo = await db.TodoList.create({
-       task: req.body.task
+       task: req.body.task,
+       user_id : req.user.id
    })
 
    res.status(201).send(newTodo);
@@ -20,23 +21,30 @@ const createTodoList = async (req,res) => {
 const updateTodoList = async (req,res) => {
     const targetId = Number(req.params.id);
     const newTask = req.body.task;
-    await db.TodoList.update({
-        task : newTask
-    },{
-        where: {id : targetId}
-    }) 
+    const targetTodo = await db.TodoList.findOne({where : {id: targetId, user_id: req.user.id}})
+    if(targetTodo){
+       await targetTodo.update({
+            task : newTask,
+        });
+        res.status(200).send({message: "Updating is success"})
+    } else{
+        res.status(404).send({message: "Todo list not found"})
+    }
     
 
-    res.status(200).send({message: "Updating is success"})
+ 
 
 }
 
 const deleteTodoList = async (req,res) => {
     const targetId = Number(req.params.id);
-    await db.TodoList.destroy({
-        where : {id: targetId},
-    })
-    res.status(204).send({message : "Deleting is success"});
+    const targetTodo = await db.TodoList.findOne({where : {id: targetId, user_id: req.user.id}})
+    if(targetTodo){
+        await targetTodo.destroy();
+        res.status(204).send({message : "Deleting is success"});
+    }else{
+        res.status(404).send({message: "Todo list not found"})
+    }
 }
 
 module.exports = {
